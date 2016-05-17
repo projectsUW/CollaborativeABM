@@ -1,0 +1,75 @@
+# Preliminary Results
+
+Experiment details:
+
+* **"tableTalk?"** is always true. 
+    + It means people can only interact when they are at part of the discussion group.
+
+* **"recomputePreference?"** is always true
+    + When people talk at the table, they can change their positions.
+    
+* **"strategy"** can be: "bridge" "random" "closeness" "influential"
+    + This is how you select a person to be at the table, according to this value within the network.
+    
+* **"firstAgree?"** can be false or true
+    + If the people invited in the first round (one per group) agree by default.
+    
+* **"invite?"** is always true
+    + Anybody at the table can invite.
+
+* **"InitialReach"** could be 5 10 15
+    + The bigger the value the more coonected the network
+    
+* **"friendOfFriends?"** is always true
+    + People at the table can invite friends of friends.
+
+* **"Groups"** could be 3 6 9
+    + Number of initial groups
+    
+* **"biasJoe"** can be "Own" "GovAndOwn" "AsGov"
+    + Strategy that the people at the table follow when inviting.
+    
+* **"PopStakeholders"** could be 100 200 300.
+    + Population in the simulation (without the government, one node).
+
+<font color="red">The output variables are:</font>
+
+* <font color="red">MaxSupport:</font>
+    + The max level of support that a community reached during one simulation run.
+    
+* <font color="red">MaxMoment:</font>
+    + The moment when the max level of support was reached.
+
+**Each combination has been repeated only 10 times** (6480 runs), the preliminay results follow:
+
+```{r, eval=TRUE, echo=FALSE, message=FALSE}
+setwd("~/Documents/Evans/craig/abm")
+res=read.csv("res10.csv",skip = 6)
+library(magrittr)
+library(dplyr)
+library(ggplot2)
+
+resNew=as.data.frame(res %>% group_by(X.run.number.) %>% filter(X.step. == max(X.step.)))
+```
+
+```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=8}
+
+p <- ggplot(resNew, aes(strategy, maxsupport)) + geom_boxplot()
+p + facet_grid(PopStakeholders ~ Groups) + 
+  labs(title = "Distribution of Support per Strategy\n organized by Population & Groups")
+
+```
+```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=8}
+
+ggplot(resNew, aes(maxsupport)) +  geom_histogram() + facet_grid(PopStakeholders ~ Groups) + 
+  labs(title = "Distribution of Support organized by Population & Groups")
+
+```
+
+```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=8}
+p <- ggplot(resNew, aes(maxmoment, maxsupport)) + geom_point()
+p + facet_grid(PopStakeholders ~ Groups) + 
+  labs(title = "Relationship of support and max moment \n organized by Population & Groups")
+```
+
+
