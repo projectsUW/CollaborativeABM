@@ -1,4 +1,4 @@
-# Preliminary Results
+# Current Results
 
 Experiment details:
 
@@ -40,36 +40,59 @@ Experiment details:
 * <font color="red">MaxMoment:</font>
     + The moment when the max level of support was reached.
 
-**Each combination has been repeated only 10 times** (6480 runs), the preliminay results follow:
+**Each combination has been repeated only 100 times** (64800 runs), the results follow:
 
 ```{r, eval=TRUE, echo=FALSE, message=FALSE}
-setwd("~/Documents/Evans/craig/abm")
-res=read.csv("res10.csv",skip = 6)
+setwd("~/Documents/GITHUBs/CollaborativeABM")
+#res=read.csv("res10.csv",skip = 6)
+res1=read.csv("GovGluCollabNetReporterW experiment-table.csv",skip = 6)
+res2=read.csv("GovGluCollabNetReporter experiment-table.csv",skip = 6)
+res=rbind(res1,res2)
+
 library(magrittr)
 library(dplyr)
 library(ggplot2)
 
 resNew=as.data.frame(res %>% group_by(X.run.number.) %>% filter(X.step. == max(X.step.)))
-```
-
-```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=8}
-
-p <- ggplot(resNew, aes(strategy, maxsupport)) + geom_boxplot()
-p + facet_grid(PopStakeholders ~ Groups) + 
-  labs(title = "Distribution of Support per Strategy\n organized by Population & Groups")
-
-```
-```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=8}
-
-ggplot(resNew, aes(maxsupport)) +  geom_histogram() + facet_grid(PopStakeholders ~ Groups) + 
-  labs(title = "Distribution of Support organized by Population & Groups")
+resNew=resNew[!resNew$maxsupport==0,]
 
 ```
 
-```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=8}
-p <- ggplot(resNew, aes(maxmoment, maxsupport)) + geom_point()
-p + facet_grid(PopStakeholders ~ Groups) + 
-  labs(title = "Relationship of support and max moment \n organized by Population & Groups")
+
+```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=10}
+
+p <- ggplot(resNew, aes(as.factor(Groups), maxsupport)) + geom_boxplot(outlier.shape = NA) +  geom_jitter(width = 0.7,aes(colour = resNew$firstAgree),alpha=0.1)  + guides(colour = guide_legend(override.aes = list(alpha = 1,size=10)))
+p + facet_grid(PopStakeholders ~ strategy) + 
+  labs(list(title = "Distribution of Support per Strategy\n organized by Population & Groups", x = "Groups", y = "Max Support",colour = "First Agree?"))
+
+```
+
+In this plot we are interested to know when max support was reached. One key element is te strategy followed to invite people into the discussion; then, we want to having some intelleigence on the network of o particular group could beat simply invitaing people randomly. Please notice:
+
+* The differences are not relevant when the number of groups in society are 6 or 9.
+* Only closeness, on average (median value), could beat random selection, even if the population size differs.
+* With less people (100), closeness could beat random selection highly due to, in this case, scenarios when the first people invited to the discussion need not be in agreement (firstAgree? is FALSE).
+* With 200 as population size, the closeness strategy could beat random strategy, and this happens mostly when first people invited agreed, and when in random selection first people invited need not agree.
+
+It seems so far, that having a small amount of groups gets a higher level of support.
+The plot below suggests that the mean support is above 25% and below 40% for all cases
+
+```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=10}
+
+ggplot(resNew, aes(maxsupport,..density..,colour=as.factor(Groups))) +  geom_freqpoly(binwidth = 0.0125) +facet_grid(PopStakeholders ~ strategy) + labs(title = "Distribution (density) of Support organized by Strategy, Population & Groups",colour="Groups") 
+
+```
+
+
+The plot below suggests that the more voice is achieved, the lower the max level of support. It also confirms that smaller groups give higher support levels.
+
+It is also clear that the highest levels of support are achieved when the people participation is below the 25% of the population.
+
+```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=10}
+p <- ggplot(resNew, aes(maxvoice, maxsupport)) + geom_point(aes(color=as.factor(Groups)),alpha = 0.3,position = "jitter")
+p + facet_grid(PopStakeholders ~ strategy) + 
+  labs(title = "Relationship of max support and max voice \n organized by inviting strategy, population, & number of groups in the population",x="Voice when max support achieved",y="max level of support achieved", colour="Groups") + guides(colour = guide_legend(override.aes = list(alpha = 1,size=10)))
+
 ```
 
 
