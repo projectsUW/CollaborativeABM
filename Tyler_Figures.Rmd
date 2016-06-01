@@ -68,7 +68,6 @@ p + facet_grid(PopStakeholders ~ strategy) +
   labs(list(title = "Distribution of Support per Strategy\n organized by Population & Coalitions", x = "Groups", y = "Max Support",colour = "First Agree?")) + theme_tufte(ticks=F) +
   scale_y_continuous(breaks=c(0.25,0.75)) + scale_colour_colorblind() +
   scale_x_discrete(name='Coalitions')
-
 ```
 
 In this plot we are interested to know when max support was reached. One key element is te strategy followed to invite people into the discussion; then, we want to having some intelleigence on the network of o particular group could beat simply invitaing people randomly. Please notice:
@@ -98,8 +97,30 @@ p + facet_grid(PopStakeholders ~ strategy) +
   labs(title = "Relationship of max support and max voice organized by\n  inviting strategy, population, & number of coalitions",x="Voice when max support achieved",y="max level of support achieved", colour="Coalitions") + guides(colour = guide_legend(override.aes = list(alpha = 1,size=10))) + theme_tufte(ticks=F) + 
   scale_y_continuous(breaks=c(0.25,0.75),name='Max Support Achieved') +
   scale_x_continuous(breaks=c(0.25,0.75))+
-  scale_colour_colorblind()
+  scale_colour_colorblind() #+ stat_ellipse(aes(colour=as.factor(Groups)))
 
 ```
 
+```{r eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=10}
+library(viridis)
+ggplot(resNew,aes(x=maxmoment,y=maxsupport,colour=maxvoice)) + geom_jitter() + 
+  scale_color_viridis(name='Representation',begin=1,end=0) + theme_tufte(ticks=F) + 
+  scale_y_continuous(breaks=c(0.25,0.75),name='Max Support Achieved') +
+  scale_x_continuous(breaks=c(4,6,8,10),name='Meeting When Max Support Achieved')
 
+
+ggplot(resNew,aes(y=maxsupport,x=biasJoe,colour=maxvoice)) + geom_jitter(alpha=0.2)+ 
+  theme_tufte(ticks=F) +
+  scale_color_viridis(name='Proportion\nRepresented',
+                                             option = 'D',
+          guide = guide_legend(alpha=1)) +
+    scale_y_continuous(breaks=c(0.25,0.75),name='Max Support Achieved') +
+  scale_x_discrete(labels=c("Government's","Own + Government's","Own"),
+                   name='Invitation Strategy',expand=c(0,0)) +
+  #theme(legend.position = c(0.5,0.1)) +
+   guides(colour = guide_legend(override.aes = list(alpha = 1),title.position='top'))
+  
+   # scale_x_continuous(breaks=c(0.25,0.75),name='Max Support Achieved')
+direction = "horizontal", title.position = "top",
+
+```
