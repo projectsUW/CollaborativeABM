@@ -43,7 +43,7 @@ Experiment details:
 **Each combination has been repeated only 100 times** (64800 runs), the results follow:
 
 ```{r, eval=TRUE, echo=FALSE, message=FALSE}
-setwd("~/Documents/GITHUBs/CollaborativeABM")
+setwd("win/user/CollaborativeABM")
 #res=read.csv("res10.csv",skip = 6)
 res1=read.csv("GovGluCollabNetReporterW experiment-table.csv",skip = 6)
 res2=read.csv("GovGluCollabNetReporter experiment-table.csv",skip = 6)
@@ -67,7 +67,11 @@ p <- ggplot(resNew, aes(as.factor(Groups), maxsupport)) + geom_boxplot(outlier.s
 p + facet_grid(PopStakeholders ~ strategy) + 
   labs(list(title = "Distribution of Support per Strategy\n organized by Population & Coalitions", x = "Groups", y = "Max Support",colour = "First Agree?")) + theme_tufte(ticks=F) +
   scale_y_continuous(breaks=c(0.25,0.75)) + scale_colour_colorblind() +
-  scale_x_discrete(name='Coalitions')
+  scale_x_discrete(name='Coalitions') +
+   theme( strip.text=element_text(size=16),
+            axis.title=element_text(size=16),
+                                      legend.title=element_text(size=16),
+                                      legend.text=element_text(size=14))
 ```
 
 In this plot we are interested to know when max support was reached. One key element is te strategy followed to invite people into the discussion; then, we want to having some intelleigence on the network of o particular group could beat simply invitaing people randomly. Please notice:
@@ -83,7 +87,12 @@ The plot below suggests that the mean support is above 25% and below 40% for all
 ```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=10}
 
 ggplot(resNew, aes(maxsupport,..density..,colour=as.factor(Groups))) +  geom_freqpoly(binwidth = 0.0125,) +facet_grid(PopStakeholders ~ strategy) + labs(title = "Distribution (density) of Support organized\n by Strategy, Population & Coalitions",colour="Coalitions") + theme_tufte(ticks=F) +
-  scale_x_continuous(breaks=c(0.25,0.75),name='Max Support') +scale_colour_colorblind()
+  scale_x_continuous(breaks=c(0.25,0.75),name='Max Support') +scale_colour_colorblind() +
+  scale_y_continuous(name='') + theme(axis.text.y=element_blank(),
+                                      strip.text=element_text(size=16),
+                                      axis.title=element_text(size=16),
+                                      legend.title=element_text(size=16),
+                                      legend.text=element_text(size=14))
 ```
 
 
@@ -94,10 +103,14 @@ It is also clear that the highest levels of support are achieved when the people
 ```{r, eval=TRUE, echo=FALSE, message=FALSE, fig.height=6,fig.width=10}
 p <- ggplot(resNew, aes(maxvoice, maxsupport)) + geom_point(aes(color=as.factor(Groups)),alpha = 0.3,position = "jitter")
 p + facet_grid(PopStakeholders ~ strategy) + 
-  labs(title = "Relationship of max support and max voice organized by\n  inviting strategy, population, & number of coalitions",x="Voice when max support achieved",y="max level of support achieved", colour="Coalitions") + guides(colour = guide_legend(override.aes = list(alpha = 1,size=10))) + theme_tufte(ticks=F) + 
+  labs(title = "Relationship of max support and max voice organized by\n  inviting strategy, population, & number of coalitions",x="Representation level when max support achieved",y="max level of support achieved", colour="Coalitions") + guides(colour = guide_legend(override.aes = list(alpha = 1,size=10))) + theme_tufte(ticks=F) + 
   scale_y_continuous(breaks=c(0.25,0.75),name='Max Support Achieved') +
-  scale_x_continuous(breaks=c(0.25,0.75))+
-  scale_colour_colorblind() #+ stat_ellipse(aes(colour=as.factor(Groups)))
+  scale_x_continuous(breaks=c(0.25,0.75)) +
+  scale_colour_colorblind() + #+ stat_ellipse(aes(colour=as.factor(Groups)))+     
+  theme(                              strip.text=element_text(size=16),
+                                      axis.title=element_text(size=16),
+                                      legend.title=element_text(size=16),
+                                      legend.text=element_text(size=14))
 
 ```
 
@@ -118,8 +131,14 @@ ggplot(resNew,aes(y=maxsupport,x=biasJoe,colour=maxvoice)) + geom_jitter(alpha=0
   scale_x_discrete(labels=c("Government's","Own + Government's","Own"),
                    name='Invitation Strategy',expand=c(0,0)) +
   #theme(legend.position = c(0.5,0.1)) +
-   guides(colour = guide_legend(override.aes = list(alpha = 1),title.position='top'))
+   guides(colour = guide_legend(override.aes = list(alpha = 1),title.position='top'))+
+  theme(                             
+                                      axis.title=element_text(size=16),
+                                      axis.text=element_text(size=14),
+                                      legend.title=element_text(size=16),
+                                      legend.text=element_text(size=14))
   
+summary(resNew$maxvoice)
    # scale_x_continuous(breaks=c(0.25,0.75),name='Max Support Achieved')
 direction = "horizontal", title.position = "top",
 
