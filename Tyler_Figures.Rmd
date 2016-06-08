@@ -137,9 +137,5 @@ ggplot(resNew,aes(y=maxsupport,x=biasJoe,colour=maxvoice)) + geom_jitter(alpha=0
                                       axis.text=element_text(size=14),
                                       legend.title=element_text(size=16),
                                       legend.text=element_text(size=14))
-  
-summary(resNew$maxvoice)
-   # scale_x_continuous(breaks=c(0.25,0.75),name='Max Support Achieved')
-direction = "horizontal", title.position = "top",
 
 ```
